@@ -1,19 +1,33 @@
-import { View, ActivityIndicator, StyleSheet, Platform, Text, ScrollView } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Slot } from 'expo-router';
 import { useGameStore } from '@/store/gameStore';
 import React, { useEffect, useState } from 'react';
+import { useFonts, Lobster_400Regular } from '@expo-google-fonts/lobster';
+import * as SplashScreen from 'expo-splash-screen';
+
+// Предотвращаем автоматическое скрытие нативного сплэш-скрина
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function RootLayoutInner() {
   const _hasHydrated = useGameStore((s) => s._hasHydrated);
   const [forceRender, setForceRender] = useState(false);
+  const [fontsLoaded] = useFonts({ Lobster_400Regular });
 
   useEffect(() => {
     const timer = setTimeout(() => setForceRender(true), 500);
     return () => clearTimeout(timer);
   }, []);
 
-  if (!_hasHydrated && !forceRender) {
+  const isReady = (_hasHydrated || forceRender) && fontsLoaded;
+
+  useEffect(() => {
+    if (isReady) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [isReady]);
+
+  if (!isReady) {
     return (
       <View style={styles.splash}>
         <ActivityIndicator size="large" color="#d76a53" />
@@ -45,3 +59,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff5f0',
   },
 });
+
