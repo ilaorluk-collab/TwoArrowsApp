@@ -54,3 +54,22 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Troubleshooting
+
+### iOS Simulator Network Error (SSL Certificate Issue)
+If you encounter an `AxiosError: Network Error` on the iOS Simulator during login or API requests, it is likely due to iOS App Transport Security (ATS) blocking the request. 
+
+This happens if your Mac has trouble resolving `twoarrows.ru` and you attempt to use the raw IP address (`104.171.128.155`) instead. iOS strictly requires the domain name in the URL to match the SSL certificate (`twoarrows.ru`), so using the IP address will always fail on iOS.
+
+**The Fix:**
+1. Leave the `API_URL` as `https://twoarrows.ru` in the code.
+2. Edit your Mac's local hosts file to map the domain to the server IP:
+   ```bash
+   sudo nano /etc/hosts
+   ```
+3. Add the following line at the end of the file:
+   ```text
+   104.171.128.155 twoarrows.ru api.twoarrows.ru
+   ```
+4. Save the file and restart the Expo server. The simulator will now route `twoarrows.ru` to the correct IP while satisfying iOS SSL requirements.

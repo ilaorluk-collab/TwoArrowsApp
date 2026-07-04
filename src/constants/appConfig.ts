@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 // Чтобы задать URL: добавь "extra": { "apiUrl": "http://..." } в app.json
 const extra = Constants.expoConfig?.extra as { apiUrl?: string } | undefined;
 
-export const API_URL: string = extra?.apiUrl ?? 'https://104.171.128.155';
+export const API_URL: string = extra?.apiUrl ?? 'https://twoarrows.ru';
 export const BASE_URL = `${API_URL}/api`;
 
 // WebSocket URL: https → wss, http → ws
