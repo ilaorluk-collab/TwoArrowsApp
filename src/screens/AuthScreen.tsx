@@ -71,17 +71,21 @@ export function AuthScreen() {
       setTokens(res.access, res.refresh);
       setCurrentUser(res.user);
       setScreen('LOBBY');
-    } catch (err: any) {
       console.error('LOGIN ERROR:', err);
-      if (err.response) {
-        console.error('Response data:', err.response.data);
-        console.error('Response status:', err.response.status);
-      } else if (err.request) {
-        console.error('No response received (Network timeout/blocked)');
-      } else {
-        console.error('Error message:', err.message);
+      let errorMsg = 'Ошибка соединения';
+      if (err.response?.data) {
+        if (err.response.data.detail) errorMsg = err.response.data.detail;
+        else if (err.response.data.error) errorMsg = err.response.data.error;
+        else if (typeof err.response.data === 'object') {
+          // Получаем первую ошибку из объекта
+          const firstKey = Object.keys(err.response.data)[0];
+          if (firstKey) {
+            const firstError = err.response.data[firstKey];
+            errorMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+          }
+        }
       }
-      setError('Ошибка соединения');
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
