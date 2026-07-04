@@ -72,12 +72,11 @@ export function AuthScreen() {
       setCurrentUser(res.user);
       setScreen('LOBBY');
       console.error('LOGIN ERROR:', err);
-      let errorMsg = 'Ошибка соединения';
+      let errorMsg = err.message || 'Ошибка соединения';
       if (err.response?.data) {
         if (err.response.data.detail) errorMsg = err.response.data.detail;
         else if (err.response.data.error) errorMsg = err.response.data.error;
         else if (typeof err.response.data === 'object') {
-          // Получаем первую ошибку из объекта
           const firstKey = Object.keys(err.response.data)[0];
           if (firstKey) {
             const firstError = err.response.data[firstKey];
